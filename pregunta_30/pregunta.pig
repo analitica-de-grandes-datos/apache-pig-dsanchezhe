@@ -33,4 +33,7 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
-
+data = LOAD 'data.csv' USING PigStorage(',') AS (fid:int, nombre:chararray, apellido:chararray, fecha:chararray, color:chararray, num:int);
+tabla_fecha = FOREACH data GENERATE fecha AS col_1, ToString(ToDate(fecha,'yyyy-MM-dd'), 'dd') as col_2, GetDay(ToDate(fecha,'yyyy-MM-dd')) AS col_3, LOWER(ToString(ToDate(fecha,'yyyy-MM-dd'), 'EEE')) AS col_4;
+tabla_fecha_1 = FOREACH tabla_fecha GENERATE col_1, col_2, col_3, (col_4 == 'mon'? 'lun':(col_4 == 'tue'? 'mar':(col_4 == 'wed'? 'mie':(col_4 == 'thu'? 'jue':(col_4 == 'fri'? 'vie':(col_4 == 'sat'? 'sab':(col_4 == 'sun'? 'dom':'falso'))))))) AS col_4_1, (col_4 == 'mon'? 'lunes':(col_4 == 'tue'? 'martes':(col_4 == 'wed'? 'miercoles':(col_4 == 'thu'? 'jueves':(col_4 == 'fri'? 'viernes':(col_4 == 'sat'? 'sabado':(col_4 == 'sun'? 'domingo':'falso'))))))) AS col_5_1;
+STORE tabla_fecha_1 INTO 'output' using PigStorage(',');
