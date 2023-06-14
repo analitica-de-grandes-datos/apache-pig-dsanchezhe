@@ -20,7 +20,15 @@ $ pig -x local -f pregunta.pig
 
         /* >>> Escriba su respuesta a partir de este punto <<< */
 */
-data = LOAD 'data.csv' USING PigStorage(',') AS (fid:int, nombre:chararray, apellido:chararray, fecha:chararray, color:chararray, num:int);
-nombre_color_tabla = FOREACH data GENERATE nombre AS col_1, color AS col_2;
-color_coinc = FILTER nombre_color_tabla BY NOT col_2 IN('blue','black');
-STORE color_coinc INTO 'output' using PigStorage(',');
+Text = LOAD 'data.csv' USING PigStorage(',')
+    AS (
+            Id:int,
+            Name:chararray,
+            last_name:chararray,
+            date:chararray,
+            colour:chararray,
+            count1:int
+    );
+specific_columns = FOREACH Text GENERATE Name,colour;
+simpleFilter = FILTER specific_columns BY not colour in ('blue','black');
+STORE simpleFilter INTO 'output' USING PigStorage(',');
